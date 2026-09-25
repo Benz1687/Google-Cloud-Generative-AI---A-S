@@ -11,6 +11,13 @@ const input = document.querySelector('#prompt-input');
 const result = document.querySelector('#result');
 const body = document.querySelector('#result-body');
 const count = document.querySelector('#char-count');
+const themeToggle = document.querySelector('#theme-toggle');
+const themeLabel = document.querySelector('#theme-label');
+const savedTheme = localStorage.getItem('edugenie-theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+function setTheme(theme) { document.documentElement.dataset.theme = theme; const dark = theme === 'dark'; themeLabel.textContent = dark ? 'Light' : 'Dark'; themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode'); localStorage.setItem('edugenie-theme', theme); }
+setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+themeToggle.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
 function selectTool(name) { activeTool = name; const tool = tools[name]; document.querySelector('#tool-kicker').textContent = tool.kicker; document.querySelector('#tool-title').textContent = tool.title; document.querySelector('#tool-description').textContent = tool.description; document.querySelector('#input-label').textContent = tool.label; input.placeholder = tool.placeholder; input.value = ''; document.querySelector('#submit-button').innerHTML = `${tool.button} <span>-></span>`; result.hidden = true; document.querySelectorAll('.tab').forEach(tab => tab.classList.toggle('active', tab.dataset.tool === name)); count.textContent = '0 / 12000'; }
 document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => selectTool(tab.dataset.tool)));
 input.addEventListener('input', () => { count.textContent = `${input.value.length} / 12000`; });
